@@ -37,6 +37,7 @@ def main() -> None:
     parser.add_argument('--delay', type=int, required=False, default=5)
     parser.add_argument('--retries', type=int, required=False, default=5)
     parser.add_argument('--retry_delay', type=int, required=False, default=30)
+    parser.add_argument('--exit_on_error', type=bool, required=False, default=False)
 
     log.debug("Argument parser set up!")
 
@@ -86,7 +87,7 @@ def main() -> None:
             log.debug(f"Starting attempt {attempt + 1} of {args.retries}:")
 
             try:
-                log.debug("But first, let me take a quick nap...")
+                log.debug(f"But first, let me take a quick nap ({args.delay} seconds)...")
                 time.sleep(args.delay)
                 
                 log.info(f"Downloading \"{unlink}\" from \"{args.url}\"...")
@@ -98,13 +99,25 @@ def main() -> None:
                         newfile.write(request.content)
 
                 except Exception:
-                    log.error("We were unable to open \"{newfilename}\" for writing. Skipping it.")
+                    log.error("We were unable to open \"{newfilename}\" for writing.")
+                    if args.exit_on_error:
+                        log.fatal("Exiting")
+                        exit()
+
+                    else:
+                        log.error("Skipping it")
 
                 break
 
             except Exception:
-                log.warning(f"There was an error. Retrying again in {args.retry_delay} seconds ({attempt} of {args.retries})")
-                time.sleep(args.retry_delay - args.delay)
+                if attempt == args.retries - 1:
+                    log.error(f"We were unable to download {unlink} in {attempt + 1} tries")
+                    if args.exit_on_error:
+                        log.fatal("Good bye.")
+
+                else:
+                    log.warning(f"There was an error. Retrying again in {args.retry_delay} seconds ({attempt} of {args.retries})")
+                    time.sleep(args.retry_delay - args.delay)
 
 
 if __name__ == '__main__':
