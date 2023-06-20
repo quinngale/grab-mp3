@@ -2,6 +2,7 @@
 
 import argparse
 import logging
+from requests import Request
 import sys
 import xml
 
