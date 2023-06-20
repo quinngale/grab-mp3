@@ -1,10 +1,11 @@
 #!/usr/bin/env python3.11
 
 import argparse
+from bs4 import BeautifulSoup
 import logging
 from requests import Request
 import sys
-import xml
+
 
 APP_NAME = sys.argv[0]
 APP_DESC = "A utility to grab MP3 files from the provided URL"
@@ -31,6 +32,7 @@ def main():
     args = parser.parse_args()
 
     url = args.url
+    
 
 if __name__ == '__main__':
     main()
