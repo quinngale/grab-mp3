@@ -6,6 +6,7 @@ import logging
 import os
 import requests
 import sys
+import time
 import urllib.parse
 
 APP_NAME = sys.argv[0]
@@ -72,13 +73,36 @@ def main():
 
 
     for link in links:
+        unlink = urllib.parse.unquote(link)
+        log.debug(f"File to download: {unlink}")
+        newfilename = os.path.join(args.download_location, unlink)
+
+        log.debug("Testing to see if \"{unlink}\" exists...")
+        if os.path.exists(newfilename):
+            log.info(f"{newfilename} exists already, so we are skipping the download.")
+            continue
+
         for attempt in range(args.retries):
-            unlink = urllib.parse.unquote(link)
+            log.debug(f"Starting attempt {attempt + 1} of {args.retries}:")
 
-            break
-        
+            try:
+                log.debug("But first, let me take a quick nap...")
+                time.sleep(args.delay)
 
-    
+                try:
+                    with open(newfilename, 'wb') as newfile:
+                        pass
+
+                except Exception:
+                    log.error("We were unable to open \"{newfilename}\" for writing. Skipping for now")
+
+
+                break
+
+            except Exception:
+                log.warning(f"There was an error. Retrying again in {args.retry_delay} seconds ({attempt} of {args.retries})")
+                time.sleep(args.retry_delay - args.delay)
+
 
 if __name__ == '__main__':
     main()
