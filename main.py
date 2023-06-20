@@ -26,14 +26,26 @@ def main():
 
     log.addHandler(consoleHandler)
 
+    log.debug("Logging set up!")
+
     parser = argparse.ArgumentParser(prog=APP_NAME, description=APP_DESC)
     parser.add_argument('url', type=str)
 
+    log.debug("Argument parser set up!")
+
     args = parser.parse_args()
+
+    log.debug(f"Arguments parsed: {args}")
 
     url = args.url
 
-    page = requests.get(url)
+    log.info("Requesting page...")
+    page = requests.get(url).text
+    soup = bs4.BeautifulSoup(page, 'html.parser')
+    log.info("Page requested and parsed.")
+
+    links = [node.get('href') for node in soup.body.find_all('a') if node.get('href').endswith('.mp3')]
+    log.debug(f"MP3s found on page: {len(links)}")
     
 
 if __name__ == '__main__':
