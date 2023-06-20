@@ -104,9 +104,6 @@ def main() -> None:
                         log.fatal("Exiting")
                         exit()
 
-                    else:
-                        log.error("Skipping it")
-
                 break
 
             except Exception:
