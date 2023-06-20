@@ -1,9 +1,9 @@
 #!/usr/bin/env python3.11
 
 import argparse
-from bs4 import BeautifulSoup
+import bs4
 import logging
-from requests import Request
+import requests
 import sys
 
 
@@ -32,6 +32,8 @@ def main():
     args = parser.parse_args()
 
     url = args.url
+
+    page = requests.get(url)
     
 
 if __name__ == '__main__':
