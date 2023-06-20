@@ -25,8 +25,11 @@ def main():
     log.addHandler(consoleHandler)
 
     parser = argparse.ArgumentParser(prog=APP_NAME, description=APP_DESC)
+    parser.add_argument('url', type=str)
 
     args = parser.parse_args()
+
+    url = args.url
 
 if __name__ == '__main__':
     main()
