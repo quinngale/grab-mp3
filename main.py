@@ -113,7 +113,7 @@ def main() -> None:
                         log.fatal("Good bye.")
 
                 else:
-                    log.warning(f"There was an error. Retrying again in {args.retry_delay} seconds ({attempt} of {args.retries})")
+                    log.warning(f"There was an error. Retrying again in {args.retry_delay} seconds ({attempt + 1} of {args.retries})")
                     time.sleep(args.retry_delay - args.delay)
 
 
