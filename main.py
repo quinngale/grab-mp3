@@ -12,7 +12,7 @@ import urllib.parse
 APP_NAME = sys.argv[0]
 APP_DESC = "A utility to grab MP3 files from the provided URL"
 
-def main():
+def main() -> None:
     log = logging.getLogger(APP_NAME)
     if hasattr(sys, 'gettrace') and sys.gettrace() is not None:
         log.setLevel(logging.DEBUG)
@@ -69,7 +69,7 @@ def main():
         log.debug("It does not. Adding that now.")
         args.url = args.url + '/'
     else:
-        log.debug("Check passed. Continuing")
+        log.debug("It dows! Continuing")
 
 
     for link in links:
@@ -77,7 +77,7 @@ def main():
         log.debug(f"File to download: {unlink}")
         newfilename = os.path.join(args.download_location, unlink)
 
-        log.debug("Testing to see if \"{unlink}\" exists...")
+        log.debug(f"Testing to see if \"{unlink}\" exists...")
         if os.path.exists(newfilename):
             log.info(f"{newfilename} exists already, so we are skipping the download.")
             continue
@@ -88,14 +88,17 @@ def main():
             try:
                 log.debug("But first, let me take a quick nap...")
                 time.sleep(args.delay)
+                
+                log.info(f"Downloading \"{unlink}\" from \"{args.url}\"...")
+                request = requests.get(f"{args.url}{link}")
 
                 try:
+                    log.debug("Trying to write the contents to the disk...")
                     with open(newfilename, 'wb') as newfile:
-                        pass
+                        newfile.write(request.content)
 
                 except Exception:
-                    log.error("We were unable to open \"{newfilename}\" for writing. Skipping for now")
-
+                    log.error("We were unable to open \"{newfilename}\" for writing. Skipping it.")
 
                 break
 
